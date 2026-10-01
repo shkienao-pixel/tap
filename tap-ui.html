@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>Tap</title>
+<style>
+:root{color-scheme:light;--ink:#243247;--muted:#65748b;--accent:#347cf0;--line:#55739917}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none}
+html{height:100%;width:100%;background:transparent;overflow:hidden}
+body{margin:0;height:100%;width:100%;padding:8px;background:transparent;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:var(--ink);overflow:hidden}
+.shell{position:relative;isolation:isolate;height:100%;min-height:0;display:flex;flex-direction:column;padding:14px 28px 16px;border-radius:20px;border:1px solid #ffffff80;overflow:hidden;background:linear-gradient(135deg,#f8faffa6 0%,#f1f6ff94 60%,#eaf0ff80 100%);-webkit-backdrop-filter:blur(48px) saturate(135%);backdrop-filter:blur(48px) saturate(135%);box-shadow:0 2px 6px #1a294a24,inset 0 1px 0 #ffffff50}
+.shell:before{content:"";position:absolute;z-index:-1;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(ellipse at 100% 5%,#b8c9f820,transparent 52%),radial-gradient(ellipse at 0 100%,#c2e2ee1c,transparent 48%)}
+button{font:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:3px solid #347cf04d;outline-offset:4px}
+.toolbar{height:26px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex:none;touch-action:none}
+.traffic{display:flex;gap:3px;margin-left:-4px}
+.traffic button{display:grid;place-items:center;width:20px;height:20px;background:transparent;border-radius:50%;padding:0}
+.traffic button:before{content:"";width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1px #00000012}
+.close:before{background:#ff6058}.min:before{background:#ffbd2e}
+.traffic button:hover:before{filter:brightness(.94)}
+
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:52px;height:52px;display:grid;place-items:center;border:1px solid #ffffffa6;border-radius:16px;background:linear-gradient(145deg,#ffffff80,#d7e5fb33);box-shadow:0 3px 10px #45669408,inset 0 1px 0 #ffffff80}
+.logo svg{width:32px;height:29px;color:#405b7a}
+h1{font-size:29px;letter-spacing:-1px;line-height:1.1;margin:0;font-weight:650}
+.tagline{font-size:12px;color:var(--muted);margin:6px 0 0}
+.source{display:flex;align-items:center;gap:6px;border:1px solid #ffffffce;border-radius:20px;background:#ffffff63;padding:7px 11px;font-size:11px;color:#536880;box-shadow:0 2px 6px #45669405}
+.source:before{content:"";height:5px;width:5px;background:#758caf;border-radius:50%}
+.section-label{font-size:11px;color:#6e7f96;margin:14px 3px 9px;font-weight:500;letter-spacing:.5px}
+.group{border:1px solid #ffffff80;border-radius:16px;overflow:hidden;background:linear-gradient(120deg,#ffffff40,#ffffff20);box-shadow:inset 0 1px 0 #ffffffa3,0 3px 12px #2d507b03}
+.row{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.row+.row{position:relative}.row+.row:before{content:"";position:absolute;left:58px;right:16px;top:0;height:1px;background:var(--line)}
+.feature-icon{height:30px;width:30px;flex:none;display:grid;place-items:center;border-radius:9px;color:#647c9d;background:#e4edf82e;border:1px solid #ffffff59}
+.feature-icon svg{height:19px;width:19px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.text{flex:1;min-width:0}.text h2{font-size:14px;font-weight:550;margin:0 0 5px}.text p{font-size:11px;line-height:1.4;margin:0;color:var(--muted)}
+.keycap{white-space:nowrap;font-size:10px;padding:4px 6px;border-radius:5px;color:#637791;border:1px solid #6c85a526;background:linear-gradient(#ffffff80,#ffffff40);box-shadow:0 1px 1px #5e789f08;margin-right:5px}
+.toggle{height:24px;width:40px;flex:none;border-radius:20px;padding:3px;background:#94a5ba66;box-shadow:inset 0 0 0 1px #5b74951a;transition:background .16s,opacity .16s}
+.toggle:before{content:"";display:block;width:18px;height:18px;background:#fff;border-radius:50%;box-shadow:0 1px 3px #243c612b;transition:transform .16s}
+.toggle[aria-checked=true]{background:linear-gradient(115deg,#5592f6,#347cf0);box-shadow:0 2px 7px #347cf022,inset 0 0 0 1px #347cf00d}
+.toggle[aria-checked=true]:before{transform:translateX(16px)}
+.toggle:disabled{cursor:default;opacity:.5}
+.preference{margin-top:18px}.preference .row{padding:12px 16px}.preference .text h2{margin:0;font-size:13px}
+.status-pill{font-size:10px;color:#6e7f96}
+.status-pill{display:flex;align-items:center;gap:6px}.mini-dot{width:4px;height:4px;border-radius:50%;background:#64a18e}
+.paused .mini-dot{background:#8a99ad}
+footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.quiet{display:flex;align-items:center;gap:6px;padding:6px 0;background:transparent;color:#6e7f96;font-size:11px}
+.quiet svg{height:12px;width:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.hide{display:flex;align-items:center;gap:10px;padding:8px 11px;color:#4c647f;background:#ffffff70;border:1px solid #ffffffcc;border-radius:9px;font-size:11px;box-shadow:0 2px 8px #45669408}
+.hide span{font-size:9px;color:#8291a6}.hide:hover{background:#ffffffa6}.quiet:hover{color:var(--accent)}
+
+@media(max-height:600px){.toolbar{margin-bottom:10px}header{margin-bottom:14px}.section-label{margin-top:11px}.row{padding:12px 16px}footer{margin-top:10px}.shell{padding-bottom:12px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+[hidden]{display:none!important}
+#mainView{min-height:0}#moreView{display:flex;flex-direction:column;flex:1;min-height:0}#moreView>.more-header,#moreView>footer{flex:none}
+.more-button{position:relative;display:flex;align-items:center;gap:12px;width:100%;background:transparent;border-radius:0;padding:12px 16px;color:var(--ink);font-size:13px;text-align:left}.more-button:before{content:"";position:absolute;left:58px;right:16px;top:0;height:1px;background:var(--line)}.more-button:hover{background:#ffffff40}.more-button:focus-visible{outline-offset:-4px}.more-button .more-label{flex:1;font-weight:550}.more-button #moreCount{font-size:10px;color:#7b8aa0}.chevron{font-size:20px;line-height:16px;color:#8291a6;width:12px;text-align:center}.back-button:hover{background:#ffffffa6}
+.more-header{display:flex;align-items:center;justify-content:space-between;margin:1px 0 20px}.more-header h1{font-size:26px;letter-spacing:-.5px}.back-button{font-size:12px;border:1px solid #ffffffcc;background:#ffffff70;color:#4c647f;border-radius:9px;padding:8px 12px}.options-scroll{height:auto;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 5px 2px 0;scrollbar-width:thin;scrollbar-color:#8ea4c14d transparent}.options-scroll::-webkit-scrollbar{width:4px}.options-scroll::-webkit-scrollbar-thumb{border-radius:4px;background:#8ea4c14d}.options-scroll .section-label:first-child{margin-top:0}.option-row{padding:15px 16px;gap:18px}.option-row .text h2{font-size:13px}.option-row .text p{line-height:1.5;font-size:11px}.option-row+.option-row:before{left:16px}.more-footer{margin-top:12px;padding-top:12px}
+</style>
+</head>
+<body>
+<main class="shell">
+<div class="toolbar" id="drag">
+<div class="traffic"><button class="close" aria-label="关闭面板" title="关闭面板，快捷键继续运行" onclick="send('hide')"></button><button class="min" aria-label="最小化" title="最小化" onclick="send('minimize')"></button></div>
+
+</div>
+<section id="mainView">
+<header>
+<div class="brand"><div class="logo"><svg viewBox="0 0 40 36" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 25H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4h17a4 4 0 0 1 4 4v2"/><rect x="10" y="10" width="26" height="22" rx="4.5"/><path d="M18 17h10m-5 0v9"/></svg></div><div><h1>Tap</h1></div></div>
+<span class="source" id="source">中文</span>
+</header>
+<section class="group">
+<div class="row"><div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 3 3 12h5v7h8v-7h5Z"/></svg></div><div class="text"><h2>切换中英文</h2><p>轻按切换</p></div><span class="keycap">Shift</span><button id="shift" class="toggle" role="switch" aria-label="Shift 切中英文" aria-checked="true" onclick="send('shift',!current.shiftEnabled)"></button></div>
+<div class="row"><div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M8 16H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg></div><div class="text"><h2>切换应用</h2><p>Shift 反向切换</p></div><span class="keycap">Alt Tab</span><button id="alt" class="toggle" role="switch" aria-label="Alt + Tab 切换应用" aria-checked="true" onclick="send('alt',!current.altEnabled)"></button></div>
+<button class="more-button" onclick="showPage('more')"><span class="feature-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></span><span class="more-label">更多</span><span id="moreCount">全部关闭</span><span class="chevron" aria-hidden="true">›</span></button>
+</section>
+<section class="group preference">
+<div class="row"><div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 3v8M6.5 6.5a8 8 0 1 0 11 0"/></svg></div><div class="text"><h2>启用快捷键</h2></div><button id="master" class="toggle" role="switch" aria-label="启用 Tap 快捷键" aria-checked="true" onclick="send('master')"></button></div>
+<div class="row"><div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M4 11a8 8 0 1 1 2.4 6.8M4 5v6h6M12 7v5l3 2"/></svg></div><div class="text"><h2>登录时自动启动</h2></div><button id="autostart" class="toggle" role="switch" aria-label="登录时自动启动" aria-checked="true" onclick="send('autostart',!current.autoLaunch)"></button></div>
+</section>
+<footer><span class="status-pill" aria-live="polite"><span class="mini-dot"></span><span id="listener">运行正常</span></span><button class="hide" onclick="send('hide')">收起 <span>esc</span></button></footer>
+</section>
+<section id="moreView" hidden>
+<div class="more-header"><div><h1>更多</h1><p class="tagline" id="moreSummary">默认关闭</p></div><button class="back-button" onclick="showPage('main')" aria-label="返回主界面">‹ 返回</button></div>
+<div class="options-scroll" id="optionsList" aria-label="更多 Windows 快捷键"></div>
+<footer class="more-footer"><button class="quiet" onclick="send('reload')"><svg viewBox="0 0 16 16"><path d="M13 6a5.2 5.2 0 1 0 .1 4M13 2v4H9"/></svg>重新加载</button><button class="hide" onclick="showPage('main')">完成</button></footer>
+</section>
+</main>
+<script>
+let current={enabled:true,shiftEnabled:true,altEnabled:true,autoLaunch:true,inputSource:'com.apple.inputmethod.SCIM.ITABC',accessibility:true,shiftListener:true,altTabListener:true,secureInput:false,compatOptions:{},compatDefinitions:[]};
+let page='main', optionSignature='';
+function showPage(next){page=next;document.getElementById('mainView').hidden=next!=='main';document.getElementById('moreView').hidden=next!=='more';send('page',next);}
+function renderOptions(s){
+ const definitions=s.compatDefinitions||[], signature=JSON.stringify(definitions);
+ if(signature!==optionSignature){
+  optionSignature=signature;
+  const list=document.getElementById('optionsList');list.replaceChildren();
+  let category='',group;
+  for(const item of definitions){
+   if(item.category!==category){category=item.category;const label=document.createElement('p');label.className='section-label';label.textContent=category==='文字编辑'?'文字编辑 · 仅文本框':category;if(category==='文字编辑')label.title='终端不适用';list.append(label);group=document.createElement('section');group.className='group';list.append(group);}
+   const row=document.createElement('div');row.className='row option-row';
+   const text=document.createElement('div');text.className='text';
+   const title=document.createElement('h2');title.textContent=item.title;
+   const detail=document.createElement('p');detail.textContent=item.detail;text.append(title,detail);
+   const toggle=document.createElement('button');toggle.className='toggle';toggle.id='compat-'+item.id;toggle.setAttribute('role','switch');toggle.setAttribute('aria-label',item.title);
+   toggle.addEventListener('click',()=>send('compat',{id:item.id,enabled:!current.compatOptions?.[item.id]}));
+   row.append(text,toggle);group.append(row);
+  }
+ }
+ let count=0;
+ for(const item of definitions){const on=s.compatOptions?.[item.id]===true;count+=on?1:0;const toggle=document.getElementById('compat-'+item.id);toggle.setAttribute('aria-checked',on);toggle.disabled=!s.enabled;}
+ document.getElementById('moreCount').textContent=count?'已选 '+count+' 项':'全部关闭';
+ document.getElementById('moreSummary').textContent=!s.enabled?'已暂停':count?'已开启 '+count+' 项':'默认关闭';
+}
+function update(s){
+ current=s;
+ renderOptions(s);
+ document.body.classList.toggle('paused',!s.enabled);
+ for(const [id,key] of [['master','enabled'],['shift','shiftEnabled'],['alt','altEnabled'],['autostart','autoLaunch']])document.getElementById(id).setAttribute('aria-checked',!!s[key]);
+ for(const id of ['shift','alt'])document.getElementById(id).disabled=!s.enabled;
+ document.getElementById('source').textContent=s.inputSource==='com.apple.inputmethod.SCIM.ITABC'?'中文':s.inputSource==='com.apple.keylayout.ABC'?'English':'其他输入法';
+ document.getElementById('listener').textContent=!s.accessibility?'需要辅助功能权限':s.secureInput?'密码输入期间暂停':!s.enabled?'已暂停':(s.shiftEnabled&&!s.shiftListener)||(s.altEnabled&&!s.altTabListener)?'正在恢复监听':'运行正常';
+}
+function send(action,value){
+ if(window.webkit?.messageHandlers?.tap){window.webkit.messageHandlers.tap.postMessage({action,value});return;}
+ if(action==='master')current.enabled=!current.enabled;else if(action==='shift')current.shiftEnabled=value;else if(action==='alt')current.altEnabled=value;else if(action==='autostart')current.autoLaunch=value;else if(action==='compat')current.compatOptions[value.id]=value.enabled;
+ update(current);
+}
+let moving=false,lastMove=0;
+const drag=document.getElementById('drag');
+drag.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('button'))return;e.preventDefault();moving=true;lastMove=0;drag.setPointerCapture(e.pointerId);send('dragStart',{x:e.screenX,y:e.screenY});});
+drag.addEventListener('pointermove',e=>{if(moving&&performance.now()-lastMove>16){e.preventDefault();lastMove=performance.now();send('dragMove',{x:e.screenX,y:e.screenY});}});
+drag.addEventListener('pointerup',e=>{if(!moving)return;e.preventDefault();moving=false;send('dragMove',{x:e.screenX,y:e.screenY});send('dragEnd');drag.releasePointerCapture(e.pointerId);});
+drag.addEventListener('pointercancel',()=>{moving=false;send('dragEnd');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();if(page==='more')showPage('main');else send('hide');}});
+update(current);
+</script>
+</body>
+</html>
