@@ -10,7 +10,7 @@
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
 html{height:100%;width:100%;background:transparent;overflow:hidden}
 body{margin:0;height:100%;width:100%;padding:8px;background:transparent;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:var(--ink);overflow:hidden}
-.shell{position:relative;isolation:isolate;height:100%;min-height:0;display:flex;flex-direction:column;padding:14px 28px 16px;border-radius:20px;border:1px solid #ffffff80;overflow:hidden;background:linear-gradient(135deg,#f8faffa6 0%,#f1f6ff94 60%,#eaf0ff80 100%);-webkit-backdrop-filter:blur(48px) saturate(135%);backdrop-filter:blur(48px) saturate(135%);box-shadow:0 2px 6px #1a294a24,inset 0 1px 0 #ffffff50}
+.shell{position:relative;isolation:isolate;height:100%;min-height:0;display:flex;flex-direction:column;padding:14px 28px 16px;border-radius:20px;border:1px solid #ffffff80;overflow:hidden;background:linear-gradient(135deg,#f8faff45 0%,#f1f6ff35 60%,#eaf0ff25 100%);-webkit-backdrop-filter:blur(48px) saturate(135%);backdrop-filter:blur(48px) saturate(135%);box-shadow:0 2px 6px #1a294a24,inset 0 1px 0 #ffffff50}
 .shell:before{content:"";position:absolute;z-index:-1;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(ellipse at 100% 5%,#b8c9f820,transparent 52%),radial-gradient(ellipse at 0 100%,#c2e2ee1c,transparent 48%)}
 button{font:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 button:focus-visible{outline:3px solid #347cf04d;outline-offset:4px}
@@ -58,6 +58,7 @@ footer{display:flex;align-items:center;justify-content:space-between;margin-top:
 #mainView{min-height:0}#moreView{display:flex;flex-direction:column;flex:1;min-height:0}#moreView>.more-header,#moreView>footer{flex:none}
 .more-button{position:relative;display:flex;align-items:center;gap:12px;width:100%;background:transparent;border-radius:0;padding:12px 16px;color:var(--ink);font-size:13px;text-align:left}.more-button:before{content:"";position:absolute;left:58px;right:16px;top:0;height:1px;background:var(--line)}.more-button:hover{background:#ffffff40}.more-button:focus-visible{outline-offset:-4px}.more-button .more-label{flex:1;font-weight:550}.more-button #moreCount{font-size:10px;color:#7b8aa0}.chevron{font-size:20px;line-height:16px;color:#8291a6;width:12px;text-align:center}.back-button:hover{background:#ffffffa6}
 .more-header{display:flex;align-items:center;justify-content:space-between;margin:1px 0 20px}.more-header h1{font-size:26px;letter-spacing:-.5px}.back-button{font-size:12px;border:1px solid #ffffffcc;background:#ffffff70;color:#4c647f;border-radius:9px;padding:8px 12px}.options-scroll{height:auto;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 5px 2px 0;scrollbar-width:thin;scrollbar-color:#8ea4c14d transparent}.options-scroll::-webkit-scrollbar{width:4px}.options-scroll::-webkit-scrollbar-thumb{border-radius:4px;background:#8ea4c14d}.options-scroll .section-label:first-child{margin-top:0}.option-row{padding:15px 16px;gap:18px}.option-row .text h2{font-size:13px}.option-row .text p{line-height:1.5;font-size:11px}.option-row+.option-row:before{left:16px}.more-footer{margin-top:12px;padding-top:12px}
+.permission-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:12px;color:#4c647f}.keyboard-mode{margin-bottom:18px;flex:none}.keyboard-mode h2{margin:0}.keyboard-mode select{font:inherit;font-size:12px;border:1px solid #ffffff80;background:#ffffff60;color:#405b7a;border-radius:7px;padding:6px}.text p{line-height:1.3}.row{padding:11px 16px}.preference{margin-top:14px}.permission-banner:not([hidden])~.group .row{padding-top:9px;padding-bottom:9px}
 </style>
 </head>
 <body>
@@ -71,7 +72,9 @@ footer{display:flex;align-items:center;justify-content:space-between;margin-top:
 <div class="brand"><div class="logo"><svg viewBox="0 0 40 36" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 25H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4h17a4 4 0 0 1 4 4v2"/><rect x="10" y="10" width="26" height="22" rx="4.5"/><path d="M18 17h10m-5 0v9"/></svg></div><div><h1>Tap</h1></div></div>
 <span class="source" id="source">中文</span>
 </header>
+<div id="permissionBanner" class="permission-banner" hidden><span>允许 Tap 适配键盘</span><button class="back-button" onclick="send('permissions')">开启辅助功能</button></div>
 <section class="group">
+<div class="row"><div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 9h1m3 0h1m3 0h1M7 13h1m3 0h1m3 0h1M8 16h8"/></svg></div><div class="text"><h2>Ctrl 快捷键</h2><p>复制、粘贴、撤销等</p></div><span class="keycap">Ctrl</span><button id="control" class="toggle" role="switch" aria-label="Ctrl 快捷键" aria-checked="true" onclick="send('control',!current.controlEnabled)"></button></div>
 <div class="row"><div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 3 3 12h5v7h8v-7h5Z"/></svg></div><div class="text"><h2>切换中英文</h2><p>轻按切换</p></div><span class="keycap">Shift</span><button id="shift" class="toggle" role="switch" aria-label="Shift 切中英文" aria-checked="true" onclick="send('shift',!current.shiftEnabled)"></button></div>
 <div class="row"><div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M8 16H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg></div><div class="text"><h2>切换应用</h2><p>Shift 反向切换</p></div><span class="keycap">Alt Tab</span><button id="alt" class="toggle" role="switch" aria-label="Alt + Tab 切换应用" aria-checked="true" onclick="send('alt',!current.altEnabled)"></button></div>
 <button class="more-button" onclick="showPage('more')"><span class="feature-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></span><span class="more-label">更多</span><span id="moreCount">全部关闭</span><span class="chevron" aria-hidden="true">›</span></button>
@@ -84,12 +87,13 @@ footer{display:flex;align-items:center;justify-content:space-between;margin-top:
 </section>
 <section id="moreView" hidden>
 <div class="more-header"><div><h1>更多</h1><p class="tagline" id="moreSummary">默认关闭</p></div><button class="back-button" onclick="showPage('main')" aria-label="返回主界面">‹ 返回</button></div>
+<section class="group keyboard-mode"><div class="row"><div class="text"><h2>键盘修饰键</h2></div><select id="modifierMode" aria-label="键盘修饰键模式" onchange="send('modifierMode',this.value==='system')"><option value="tap">由 Tap 适配</option><option value="system">系统已交换</option></select></div></section>
 <div class="options-scroll" id="optionsList" aria-label="更多 Windows 快捷键"></div>
-<footer class="more-footer"><button class="quiet" onclick="send('reload')"><svg viewBox="0 0 16 16"><path d="M13 6a5.2 5.2 0 1 0 .1 4M13 2v4H9"/></svg>重新加载</button><button class="hide" onclick="showPage('main')">完成</button></footer>
+<footer class="more-footer"><button class="quiet" onclick="send('reload')"><svg viewBox="0 0 16 16"><path d="M13 6a5.2 5.2 0 1 0 .1 4M13 2v4H9"/></svg>重新连接</button><button class="hide" onclick="showPage('main')">完成</button></footer>
 </section>
 </main>
 <script>
-let current={enabled:true,shiftEnabled:true,altEnabled:true,autoLaunch:true,inputSource:'com.apple.inputmethod.SCIM.ITABC',accessibility:true,shiftListener:true,altTabListener:true,secureInput:false,compatOptions:{},compatDefinitions:[]};
+let current={enabled:true,shiftEnabled:true,altEnabled:true,autoLaunch:false,controlEnabled:true,alreadySwapped:false,inputSource:'com.apple.inputmethod.SCIM.ITABC',accessibility:false,shiftListener:true,altTabListener:true,secureInput:false,compatOptions:{},compatDefinitions:[]};
 let page='main', optionSignature='';
 function showPage(next){page=next;document.getElementById('mainView').hidden=next!=='main';document.getElementById('moreView').hidden=next!=='more';send('page',next);}
 function renderOptions(s){
@@ -116,16 +120,18 @@ function renderOptions(s){
 }
 function update(s){
  current=s;
+ document.getElementById('permissionBanner').hidden=!!s.accessibility;
+ document.getElementById('modifierMode').value=s.alreadySwapped?'system':'tap';
  renderOptions(s);
  document.body.classList.toggle('paused',!s.enabled);
- for(const [id,key] of [['master','enabled'],['shift','shiftEnabled'],['alt','altEnabled'],['autostart','autoLaunch']])document.getElementById(id).setAttribute('aria-checked',!!s[key]);
- for(const id of ['shift','alt'])document.getElementById(id).disabled=!s.enabled;
+ for(const [id,key] of [['master','enabled'],['shift','shiftEnabled'],['alt','altEnabled'],['autostart','autoLaunch'],['control','controlEnabled']])document.getElementById(id).setAttribute('aria-checked',!!s[key]);
+ for(const id of ['shift','alt','control'])document.getElementById(id).disabled=!s.enabled;
  document.getElementById('source').textContent=s.inputSource==='com.apple.inputmethod.SCIM.ITABC'?'中文':s.inputSource==='com.apple.keylayout.ABC'?'English':'其他输入法';
- document.getElementById('listener').textContent=!s.accessibility?'需要辅助功能权限':s.secureInput?'密码输入期间暂停':!s.enabled?'已暂停':(s.shiftEnabled&&!s.shiftListener)||(s.altEnabled&&!s.altTabListener)?'正在恢复监听':'运行正常';
+ document.getElementById('listener').textContent=!s.accessibility?'需要辅助功能权限':s.secureInput?'密码输入期间暂停':s.inputError?'请添加 ABC 和简体拼音':s.message?s.message:s.loginPending?'请在系统设置批准登录启动':!s.enabled?'已暂停':(s.shiftEnabled&&!s.shiftListener)||(s.altEnabled&&!s.altTabListener)?'正在恢复监听':'运行正常';
 }
 function send(action,value){
  if(window.webkit?.messageHandlers?.tap){window.webkit.messageHandlers.tap.postMessage({action,value});return;}
- if(action==='master')current.enabled=!current.enabled;else if(action==='shift')current.shiftEnabled=value;else if(action==='alt')current.altEnabled=value;else if(action==='autostart')current.autoLaunch=value;else if(action==='compat')current.compatOptions[value.id]=value.enabled;
+ if(action==='master')current.enabled=!current.enabled;else if(action==='shift')current.shiftEnabled=value;else if(action==='alt')current.altEnabled=value;else if(action==='autostart')current.autoLaunch=value;else if(action==='control')current.controlEnabled=value;else if(action==='modifierMode')current.alreadySwapped=value;else if(action==='compat')current.compatOptions[value.id]=value.enabled;
  update(current);
 }
 let moving=false,lastMove=0;
